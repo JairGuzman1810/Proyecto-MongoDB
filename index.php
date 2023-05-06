@@ -11,11 +11,6 @@ if (isset($_GET["q"])) {
     $pagina = $_GET["q"];
 }
 switch ($pagina) {
-    case "creditos":
-        include_once __DIR__ . "/vistas/encabezado.php";
-        include_once __DIR__ . "/vistas/creditos.php";
-        include_once __DIR__ . "/vistas/pie.php";
-        break;
     case "listar":
         $cursorProductos = ProductoModel::obtenerTodos();
         include_once __DIR__ . "/vistas/encabezado.php";
@@ -66,6 +61,7 @@ switch ($pagina) {
         include_once __DIR__ . "/vistas/mostrador.php";
         break;
     case "tienda":
+        $cursorProductos = ProductoModel::obtenerTodos();
         include_once __DIR__ . "/vistas/navegador.php";
         include_once __DIR__ . "/vistas/tienda.php";
         break;
@@ -97,6 +93,7 @@ switch ($pagina) {
 
         $resultado = ProductoModel::actualizarVarios($productos); 
         if (!$resultado) {
+            echo json_encode("error");
             return;
         }
 
@@ -109,14 +106,35 @@ switch ($pagina) {
 
         $resultado = VentaModel::insertar($venta);
 
-        if($resultado) {
-            echo json_encode("bien");
-        } else {
-            echo json_encode("mal");
+        if(!$resultado) {
+            echo json_encode("error");
         }
 
 
+        echo json_encode("ok");
+        break;
+    case "historial":
+        if (!isset($_POST["fechaInicio"]) || !isset($_POST["fechaFin"])) {
+            // Si las fechas no están definidas, obtenemos todas las ventas
+            $cursorVentas = VentaModel::obtenerTodos();
+        } else {
+            // Si las fechas están definidas, filtramos las ventas por fecha
+            $cursorVentas = VentaModel::obtenerTodos();
+            $fechaInicio = DateTime::createFromFormat('Y-m-d', $_POST["fechaInicio"]);
+            $fechaFin = DateTime::createFromFormat('Y-m-d', $_POST["fechaFin"]);
+            $ventasFiltradas = array();
+            foreach ($cursorVentas as $venta) {
+                $fechaVenta = DateTime::createFromFormat('Y-m-d H:i:s', $venta["fecha"]);
+                if ($fechaVenta >= $fechaInicio && $fechaVenta <= $fechaFin) {
+                    $ventasFiltradas[] = $venta;
+                }
+            }
+            $cursorVentas = $ventasFiltradas;
+        }
+        
+        // Renderizamos la vista con las ventas obtenidas
+        include_once __DIR__ . "/vistas/navegador.php";
+        include_once __DIR__ . "/vistas/historial.php";
         
 
-        break;
 }

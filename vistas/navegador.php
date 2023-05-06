@@ -88,9 +88,9 @@
         </a>
       </li>
       <li>
-        <a href="/ProyectoBdNoR/catalogo.php" class="nav-link text-white">
+        <a href="?q=historial" class="nav-link <?php echo isset($_GET["q"]) && $_GET["q"] === "historial" ? "active": "text-white" ?>"">
           <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
-          Catalogo de productos
+          Historial de ventas
         </a>
       </li>
     </ul>

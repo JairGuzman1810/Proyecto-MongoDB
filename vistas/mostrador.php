@@ -12,7 +12,8 @@
   <input type="text" class="form-control" id="Direccion" placeholder="Direccion del cliente" disabled>
 </div>
 <div class="mb-3">
-  <label for="formGroupExampleInput2" class="form-label">Carrito</label>
+  <label for="formGroupExampleInput2" class="form-label" style="display: inline-block; width: 50%;">Carrito</label>
+  <label for="totalpagar" id="totalpagar" class="form-label" style="display: inline-block; width: 48%; text-align: left;">$ 0</label>
 <div style="border: 1px solid black; height: 500px; padding: 2%;">
   
   <table class="table" id="table-carrito" style="font-size: 10px;">
@@ -68,7 +69,7 @@
 </div>
     </div>
   </div>
-  <a class="btn btn-success" onclick="ejecutar()">
+  <a class="btn btn-success" onclick="registrarVenta()">
     <i class="fa fa-shopping-cart"></i>
   </a>   
 </section>
@@ -169,6 +170,16 @@
   var cantidadDisponibleCell = $('#cantidad-disponible-' + productId);
   var cantidadDisponible = parseInt(cantidadDisponibleCell.text()) - parseInt(cantidadSolicitada);
   cantidadDisponibleCell.text(cantidadDisponible);
+
+  // Update total
+  var carrito = getCarritoData();
+  var total = 0;
+  for (var i = 0; i < carrito.length; i++) {
+    total += parseFloat(carrito[i].precio);
+  }
+
+  var cantidadDisponibleCell = $('#totalpagar');
+  cantidadDisponibleCell.text("$ "+total);
 }
 
 
@@ -209,7 +220,7 @@ function getCarritoData() {
   return data;
 }
 
-function ejecutar() {
+function registrarVenta() {
   var productos = getProductosData();
   var carrito = getCarritoData();
   var cliente = document.querySelector('#Cliente').value;
@@ -235,8 +246,28 @@ function ejecutar() {
       type: "POST",
       url: url,
       data: data, // convert the object to a JSON string
-      success: function(response) {
-        console.log(response)
+      success: function(response) {        
+        if(response.replace(/"/g, '') === "ok") {
+          Swal.fire({
+          title: 'Venta registrada.',
+          text: 'La venta ha sido registrada correctamente.',
+          icon: 'success',
+          confirmButtonText: 'Ok'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+        }});
+
+        } else {
+          Swal.fire({
+          title: '¡Error!',
+          text: 'Hubo un error al registrar la información',
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        });
+        }
+        
+
         // handle the response
       }
     });
