@@ -27,7 +27,7 @@
       }
       main {
     display: flex;
-    background-image: url('/ProyectoBdNoR/img/pescaderia.png');
+    background-image: url('./img/pescaderia.png');
     flex-wrap: nowrap;
     height: 100vh;
     height: -webkit-fill-available;
