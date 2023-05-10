@@ -1,22 +1,14 @@
 <?php
 require_once __DIR__ . "/vendor/autoload.php";
-require_once __DIR__ . "/Contacto.php";
-require_once __DIR__ . "/ContactosModel.php";
-require_once __DIR__ . "/Producto.php";
-require_once __DIR__ . "/ProductoModel.php";
-require_once __DIR__ . "/Venta.php";
-require_once __DIR__ . "/VentaModel.php";
+require_once __DIR__ . "/modelos/Producto.php";
+require_once __DIR__ . "/modelos/ProductoModel.php";
+require_once __DIR__ . "/modelos/Venta.php";
+require_once __DIR__ . "/modelos/VentaModel.php";
 $pagina = "inicio";
 if (isset($_GET["q"])) {
     $pagina = $_GET["q"];
 }
 switch ($pagina) {
-    case "listar":
-        $cursorProductos = ProductoModel::obtenerTodos();
-        include_once __DIR__ . "/vistas/encabezado.php";
-        include_once __DIR__ . "/vistas/listar.php";
-        include_once __DIR__ . "/vistas/pie.php";
-        break;
     case "guardar":
         $producto = new Producto($_POST["nombre"], $_POST["cantidadDisponible"],  $_POST["precio"]);
         $resultado = ProductoModel::insertar($producto);
@@ -52,26 +44,21 @@ switch ($pagina) {
         }
         break;
     case "inicio":
-        include_once __DIR__ . "/vistas/navegador.php";
         include_once __DIR__ . "/vistas/inicio.php";
         break;
     case "mostrador":
         $cursorProductos = ProductoModel::obtenerTodos();
-        include_once __DIR__ . "/vistas/navegador.php";
         include_once __DIR__ . "/vistas/mostrador.php";
         break;
     case "tienda":
         $cursorProductos = ProductoModel::obtenerTodos();
-        include_once __DIR__ . "/vistas/navegador.php";
         include_once __DIR__ . "/vistas/tienda.php";
         break;
     case "inventario":
         $cursorProductos = ProductoModel::obtenerTodos();
-        include_once __DIR__ . "/vistas/navegador.php";
         include_once __DIR__ . "/vistas/inventario.php";
         break;
     case "agregar":
-        include_once __DIR__ . "/vistas/navegador.php";
         include_once __DIR__ . "/vistas/agregar.php";
         break;
     case "editar":
@@ -80,7 +67,6 @@ switch ($pagina) {
         }
     
         $producto = ProductoModel::obtenerPorId($_GET["id"]);
-        include_once __DIR__ . "/vistas/navegador.php";
         include_once __DIR__ . "/vistas/editar.php";
         break;
     case "guardarCarrito":
@@ -133,7 +119,6 @@ switch ($pagina) {
         }
         
         // Renderizamos la vista con las ventas obtenidas
-        include_once __DIR__ . "/vistas/navegador.php";
         include_once __DIR__ . "/vistas/historial.php";
         
 
